@@ -9,6 +9,7 @@ import itertools
 import tensorflow.contrib.slim as slim
 from PIL import Image
 
+
 #Generates gifs
 def make_gif(images, fname, duration=2, true_image=False):
   import moviepy.editor as mpy
@@ -32,9 +33,9 @@ def make_gif(images, fname, duration=2, true_image=False):
 def loadImages(data,bw_bool,flip):
     images = []
     images_bw = []
-    for myFile in data:
-        img = Image.open(myFile)
-        if bw_bool == False:
+    if bw_bool == False:
+        for myFile in data:
+            img = Image.open(myFile)
             bw = np.max(img,2)
             bw = np.stack([bw,bw,bw],2)
             bw[:,:40,:] = 0
@@ -47,14 +48,16 @@ def loadImages(data,bw_bool,flip):
                 images.append(img_flip)
                 bw_flip = np.fliplr(bw)
                 images_bw.append(bw_flip)
-            images = np.array(images)
-            images = images.astype('float32')
-            images = images / 256
-            images_bw = np.array(images_bw)
-            images_bw = images_bw.astype('float32')
-            images_bw = images_bw / 256
-            return images,images_bw
-        else:
+        images = np.array(images)
+        images = images.astype('float32')
+        images = images / 256
+        images_bw = np.array(images_bw)
+        images_bw = images_bw.astype('float32')
+        images_bw = images_bw / 256
+        return images,images_bw
+    else:
+        for myFile in data:
+            img = Image.open(myFile)
             bw = img.resize((196,144))
             bw = np.max(bw,2)
             bw = np.stack([bw,bw,bw],2)
@@ -62,11 +65,11 @@ def loadImages(data,bw_bool,flip):
             bw_w[:,30:-30,:] = bw
             bw_w[:,:40,:] = 0
             bw_w[:,-40:,:] = 0
-            images.append(bw_w)
-            images = np.array(images)
-            images = images.astype('float32')
-            images = images / 256
-            return images
+        images.append(bw_w)
+        images = np.array(images)
+        images = images.astype('float32')
+        images = images / 256
+        return images
 
 #This function performns a leaky relu activation, which is needed for the discriminator network.
 def lrelu(x, leak=0.2, name="lrelu"):
