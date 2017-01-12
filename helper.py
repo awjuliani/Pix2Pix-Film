@@ -7,6 +7,7 @@ import os
 import csv
 import itertools
 import tensorflow.contrib.slim as slim
+from PIL import Image
 
 #Generates gifs
 def make_gif(images, fname, duration=2, true_image=False):
